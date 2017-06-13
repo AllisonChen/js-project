@@ -10,14 +10,16 @@ window.addEventListener('keydown', (e)=>{
 function show(){
 	$("#startBtn").hide();
 	$("#discriptionBlock").css("opacity","1");
+	$("#progress").css("opacity","1");
+	$("#progressBar").css("opacity","1");
 	$("#ingredientList").css("left","0%");
 	$("#spiceList").css("right","0%");
 }
 
 //drag and drop
-
 let stage = new createjs.Stage(canvas);
 let repo = new createjs.LoadQueue();
+let count = 0;
 
 // automatically update
 createjs.Ticker.on("tick", e => stage.update());
@@ -113,8 +115,10 @@ function drag(){
 	];
 
 	for(var i=0;i<dragNode.length;i++){
+
 		//add drag start listener
 	  dragNode[i].addEventListener('dragstart',(e)=>{
+
 	  	//get drag element
 	  	dragElement = e.target.id;
 	  	dragJudgment = false;
@@ -135,35 +139,42 @@ function drag(){
 		 	//add drop listener
 		 	targetNode.addEventListener('drop',(e)=>{
 		 		e.preventDefault();
-		 		if(dragJudgment) {
-		 			//canvas add image
-		 			stage.removeAllChildren();
-					let element = new createjs.Bitmap(repo.getResult(dragElement));
-					element.set({scaleX: 0.3, scaleY: 0.3})
-					stage.addChild(element);
-					//change description
-					$("#discriptionBlock").text(dragDiscription);
-					//change element status
+
+		 		//change element status
 			  	$("#"+dragElement).attr("draggable","false");
 			  	$("#"+dragElement).css({
 			  		"opacity": "0.6",
 			  		"cursor": "not-allowed"
 			  	});
+
+			  // conditional judgment
+		 		if(dragJudgment) {
+
+		 			//progress bar
+		 			count += 1;
+		 			$("#progressBar").css({
+		 				"width": (6.25*count)+"%",
+		 				"background": "#f63a0f"
+		 			});
+		 			$("#progressBar").text((6.25*count)+"%");
+		 			//canvas add image
+		 			stage.removeAllChildren();
+					let element = new createjs.Bitmap(repo.getResult(dragElement));
+					element.set({scaleX: 0.3, scaleY: 0.3})
+					stage.addChild(element);
+
+					//change description
+					$("#discriptionBlock").text(dragDiscription);	
 		 		}
+
 		 		else {
 		 			//pop up wrong window
 		 			stage.removeAllChildren();
-		 			$("#popupWindow").show();
-		 			
+		 			$("#wrongWindow").show();
 		 			window.addEventListener('keydown', (e)=>{
 		 				switch(e.keyCode){
 				  	case 13:// enter
-					  	$("#popupWindow").hide();
-					  	$("#"+dragElement).attr("draggable","false");
-					  	$("#"+dragElement).css({
-					  		"opacity": "0.6",
-					  		"cursor": "not-allowed"
-					  	});
+					  	$("#wrongWindow").hide();
 				    	break;
 						}	
 		 			});
@@ -171,10 +182,10 @@ function drag(){
 		 		delete dragElement;
 		 		delete dragJudgment;
 		 	})
-
 	 	})
 	}
 }
+
 
 
 
