@@ -1,5 +1,5 @@
 * {
-  border: solid 1px;
+  /*border: solid 1px;*/
   user-select: none;
 }
 
@@ -35,6 +35,52 @@ html,body {
   left: 50%;
   transform: translateX(-50%);
 }
+
+#discriptionBlock{
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 60px;
+  padding: 10px;
+  background: rgba(255,255,255,0.9);
+  opacity: 0;
+  border-radius: 4px;
+  transition: 1.2s;
+}
+
+#popupWindow {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  padding-top: 120px;
+  width: 600px;
+  height: 400px;
+  background: #000;
+  color: #fff;
+  text-align: center;
+  border-radius: 4px;
+}
+
+#popupWindow .discription{
+  padding: 40px;
+  font-size: 48px;
+  font-weight: bold;
+}
+
+#popupWindow button{
+  padding: 24px 30px;
+  font-size: 24px;
+  font-weight: bold;
+  border-radius: 4px;
+  background: #fff;
+}
+
+
+
 
 #ingredientList {
   position: absolute;

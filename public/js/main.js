@@ -1,14 +1,15 @@
 // Press Enter
 window.addEventListener('keydown', (e)=>{
-		switch(e.keyCode){
-    	case 13:// enter
-  	  	show();
-      	break;
-		}
+	switch(e.keyCode){
+  	case 13:// enter
+	  	show();
+    	break;
+	}
 });
 
 function show(){
 	$("#startBtn").hide();
+	$("#discriptionBlock").css("opacity","1");
 	$("#ingredientList").css("left","0%");
 	$("#spiceList").css("right","0%");
 }
@@ -37,20 +38,94 @@ repo.loadManifest([
 	{id:'rice_noodle',src:"../img/rice_noodle.png"},
 	{id:'shrimp',src:"../img/shrimp.png"},
 	{id:'thai_sauce',src:"../img/thai_sauce.png"},
-
 ]);
 repo.on('complete', drag); // wait until all assets are loaded
 
 function drag(){
 	let dragNode = document.querySelectorAll('.listItem');
 	let targetNode = document.querySelector('#canvas');
-	const ingradientList = ["pad_sauce","garlic","red_onion","radish","peanut","thai_sauce","fish_sauce","fructose","rice_noodle","shrimp","egg","pork","dried_tofu","bean_sprout","leek","lemon"];
+	const ingradientList = 
+	[
+		{
+			"name": "pad_sauce",
+			"description": ""
+		},
+		{
+			"name": "garlic",
+			"description": "蒜頭是"
+		},
+		{
+			"name": "red_onion",
+			"description": ""
+		},
+		{
+			"name": "radish",
+			"description": ""
+		},
+		{
+			"name": "peanut",
+			"description": ""
+		},
+		{
+			"name": "thai_sauce",
+			"description": ""
+		},
+		{
+			"name": "fish_sauce",
+			"description": ""
+		},
+		{
+			"name": "fructose",
+			"description": ""
+		},
+		{
+			"name": "rice_noodle",
+			"description": ""
+		},
+		{
+			"name": "shrimp",
+			"description": ""
+		},
+		{
+			"name": "egg",
+			"description": ""
+		},
+		{
+			"name": "pork",
+			"description": ""
+		},
+		{
+			"name": "dried_tofu",
+			"description": ""
+		},
+		{
+			"name": "bean_sprout",
+			"description": ""
+		},
+		{
+			"name": "leek",
+			"description": ""
+		},
+		{
+			"name": "lemon",
+			"description": ""
+		}
+	];
 
 	for(var i=0;i<dragNode.length;i++){
 		//add drag start listener
 	  dragNode[i].addEventListener('dragstart',(e)=>{
 	  	//get drag element
-	  	let dragElement = e.target.id;
+	  	dragElement = e.target.id;
+	  	dragJudgment = false;
+
+	  	for(obj of ingradientList){
+		  	if(obj["name"] === dragElement){
+		  		dragJudgment = true;
+		  		dragDiscription = obj["description"];
+		  	}
+			}
+
 
 	  	//add drag over listener
 		 	targetNode.addEventListener('dragover', (e)=>{
@@ -60,16 +135,41 @@ function drag(){
 		 	//add drop listener
 		 	targetNode.addEventListener('drop',(e)=>{
 		 		e.preventDefault();
-		 		if(ingradientList.indexOf(dragElement) !== -1) {
+		 		if(dragJudgment) {
 		 			//canvas add image
+		 			stage.removeAllChildren();
 					let element = new createjs.Bitmap(repo.getResult(dragElement));
 					element.set({scaleX: 0.3, scaleY: 0.3})
 					stage.addChild(element);
+					//change description
+					$("#discriptionBlock").text(dragDiscription);
+					//change element status
+			  	$("#"+dragElement).attr("draggable","false");
+			  	$("#"+dragElement).css({
+			  		"opacity": "0.6",
+			  		"cursor": "not-allowed"
+			  	});
 		 		}
 		 		else {
 		 			//pop up wrong window
+		 			stage.removeAllChildren();
+		 			$("#popupWindow").show();
+		 			
+		 			window.addEventListener('keydown', (e)=>{
+		 				switch(e.keyCode){
+				  	case 13:// enter
+					  	$("#popupWindow").hide();
+					  	$("#"+dragElement).attr("draggable","false");
+					  	$("#"+dragElement).css({
+					  		"opacity": "0.6",
+					  		"cursor": "not-allowed"
+					  	});
+				    	break;
+						}	
+		 			});
 		 		}
-		 		dragElement = undefined ;
+		 		delete dragElement;
+		 		delete dragJudgment;
 		 	})
 
 	 	})
